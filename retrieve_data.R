@@ -1,18 +1,13 @@
-start_time <- Sys.time()
 options(timeout = 5000)
 # Human genome download :
 download.file(
   'https://hgdownload.cse.ucsc.edu/goldenpath/hg38/bigZips/hg38.fa.gz',
   'data/genome/hg38.fa.gz')
 
-# mRNA data download (16 different tissues):
+# miRNA data download (4 replicates for 3 tissues):
 
-mrna_metadata <- read.csv(file = "data/mrnaseq_links.csv")
+sample_table <- read.csv(file = "data/sample_table_links.csv")
 
-
-apply(mrna_metadata, 1, function(row) {
-  download.file(row["link"], file.path("data", "mrnaseq_data", row["code"]))
+apply(sample_table, 1, function(row) {
+  download.file(row["link"], file.path("data", "mirnaseq_data", row["code"]))
 })
-
-end_time <- Sys.time()
-end_time - start_time

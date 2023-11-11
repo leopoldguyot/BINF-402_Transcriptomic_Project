@@ -1,0 +1,13 @@
+tissue_name,replicate,code,link,dataset,sex,age,technology
+pancreas_body,1,ENCFF456WPB,https://www.encodeproject.org/files/ENCFF456WPB/@@download/ENCFF456WPB.fastq.gz,ENCSR723WQE,male,54,Illumina_HiSeq_2000
+pancreas_body,2,ENCFF327IXJ,https://www.encodeproject.org/files/ENCFF327IXJ/@@download/ENCFF327IXJ.fastq.gz,ENCSR723WQE,male,54,Illumina_HiSeq_2000
+pancreas_body,1,ENCFF628ABP,https://www.encodeproject.org/files/ENCFF628ABP/@@download/ENCFF628ABP.fastq.gz,ENCSR400OKQ,male,37,Illumina_HiSeq_2000
+pancreas_body,2,ENCFF987SHZ,https://www.encodeproject.org/files/ENCFF987SHZ/@@download/ENCFF987SHZ.fastq.gz,ENCSR400OKQ,male,37,Illumina_HiSeq_2000
+gastrocnemius_medialis,1,ENCFF881FED,https://www.encodeproject.org/files/ENCFF881FED/@@download/ENCFF881FED.fastq.gz,ENCSR491VSN,male,54,Illumina_HiSeq_2000
+gastrocnemius_medialis,2,ENCFF689CZI,https://www.encodeproject.org/files/ENCFF689CZI/@@download/ENCFF689CZI.fastq.gz,ENCSR491VSN,male,54,Illumina_HiSeq_2000
+gastrocnemius_medialis,1,ENCFF779GVO,https://www.encodeproject.org/files/ENCFF779GVO/@@download/ENCFF779GVO.fastq.gz,ENCSR292QOC,male,37,Illumina_HiSeq_2000
+gastrocnemius_medialis,2,ENCFF505MBD,https://www.encodeproject.org/files/ENCFF505MBD/@@download/ENCFF505MBD.fastq.gz,ENCSR292QOC,male,37,Illumina_HiSeq_2000
+prostate_gland,1,ENCFF683ZDJ,https://www.encodeproject.org/files/ENCFF683ZDJ/@@download/ENCFF683ZDJ.fastq.gz,ENCSR373CTA,male,54,Illumina_HiSeq_2000
+prostate_gland,2,ENCFF586YSA,https://www.encodeproject.org/files/ENCFF586YSA/@@download/ENCFF586YSA.fastq.gz,ENCSR373CTA,male,54,Illumina_HiSeq_2000
+prostate_gland,1,ENCFF824HJD,https://www.encodeproject.org/files/ENCFF824HJD/@@download/ENCFF824HJD.fastq.gz,ENCSR185LOQ,male,37,Illumina_HiSeq_2000
+prostate_gland,2,ENCFF486DIS,https://www.encodeproject.org/files/ENCFF486DIS/@@download/ENCFF486DIS.fastq.gz,ENCSR185LOQ,male,37,Illumina_HiSeq_2000
