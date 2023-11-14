@@ -4,3 +4,9 @@
 .Rproj
 .Rproj.user
 BINF-402_Transcriptomic_Project.Rproj
+*.log
+*.aux
+*.bbl
+*.out
+*.gz
+
