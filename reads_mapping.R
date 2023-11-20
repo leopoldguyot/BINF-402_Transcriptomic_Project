@@ -1,7 +1,7 @@
 ############ IMPORTS ###############
 library(Rsubread)
 library(ShortRead)
-
+library(QuasR)
 
 ############ FUNCTIONS ############
 
@@ -30,7 +30,19 @@ buildindex("data_output/index/hg38_index", "data/genome/hg38.fa.gz",
            indexSplit = TRUE)
 
 reads_files <- list.files(path = "data/mirnaseq_data", full.names = TRUE)
-lapply(reads_files, quality_control)
 
-filtered_reads_files <- list.files(path = "data_output/filtered_reads", full.names = TRUE)
-lapply(filtered_reads_files, mapping)
+destination_filtered <- sapply(reads_files,
+                               function(name) paste("data_output/filtered_reads/filtered_",
+                                                    basename(name), sep = ""
+                                                    )
+                               )
+
+preprocessReads(reads_files,
+                outputFilename = destination_filtered,
+                truncateStartBases = 5,
+                nBases = 0)
+
+reads_files_to_be_mapped <- c(list.files(path = "data_output/filtered_reads",
+                                         full.names = TRUE),
+                              reads_files)
+lapply(reads_files_to_be_mapped, mapping)
