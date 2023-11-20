@@ -1,6 +1,7 @@
 ############## IMPORTS #################
 library(ShortRead)
 library(ggplot2)
+library(stringr)
 ############# FUNCTIONS ###############
 
 load_quality <- function(filename){
@@ -9,7 +10,7 @@ load_quality <- function(filename){
 }
 
 extract_read_means <- function(quality){
-  alphabetScore(quality(fq))/width(quality)
+  alphabetScore(quality)/width(quality)
 }
 
 extract_cycle_means <- function(quality){
@@ -30,23 +31,27 @@ extract_cycle_means <- function(quality){
 }
 
 
-read_mean_plot <- function(quality){
+read_mean_plot <- function(quality,name){
   means <- extract_read_means(quality)
   #Name
-  ggsave("Figures/legacy_plots/", ggplot(mapping = aes(x = means, after_math(scaled)))+
-    geom_density())
+  ggsave(filename = paste("Figures/legacy_plots/","read_mean_", name,".pdf", sep = ""),
+         ggplot(mapping = aes(x = means, after_stat(scaled))) +
+            geom_density())
 }
 
-cycle_mean_plot <- function(quality){
+cycle_mean_plot <- function(quality, name){
   means <- extract_cycle_means(quality)
-  means <- as.data.frame(test)
-  ggsave("Figures/legacy_plots/",ggplot(means, aes(x = 1:length(means), y = means))+geom_line)
+  means <- as.data.frame(means)
+  ggsave(filename = paste("Figures/legacy_plots/","cycle_mean_", name,".pdf", sep = ""),
+         ggplot(means, aes(x = 1:length(means), y = means)) + geom_line())
 }
 run_qc_plots <- function(fastqfiles){
   for (file in fastqfiles){
+    base <- str_remove(basename(file),".fastq.gz")
+    print(base)
     quality <- load_quality(file)
-    read_mean_plot(quality)
-    cycle_mean_plot(quality)
+    read_mean_plot(quality,base)
+    cycle_mean_plot(quality,base)
   }
 
 }
