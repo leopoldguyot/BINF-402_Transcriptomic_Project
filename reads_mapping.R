@@ -24,7 +24,7 @@ mapping <- function(filename){
 }
 
 
-########### MAIN CODE ############
+########### BODY ############
 
 buildindex("data_output/index/hg38_index", "data/genome/hg38.fa.gz",
            indexSplit = TRUE)

@@ -55,7 +55,7 @@ run_qc_plots <- function(fastqfiles){
   }
 
 }
-############### Main code #######################
+############### BODY #######################
 
 reads_files <- list.files(path = "data/mirnaseq_data", full.names = TRUE)
 
