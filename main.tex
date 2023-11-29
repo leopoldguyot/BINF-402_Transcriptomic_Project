@@ -16,7 +16,7 @@
 
 \usepackage{float}
 
-\usepackage[hidelinks]{hyperref}
+\usepackage[hidelinks, urlcolor=cyan]{hyperref}
 
 \usepackage{url}
 
@@ -25,19 +25,14 @@
 \bibliographystyle{abbrvnat}
 \setcitestyle{authoryear,open={(},close={)}}
 
-\usepackage[most]{tcolorbox}
-
 \usepackage{csquotes}
 
 \usepackage{fancyhdr}
 
-
-\usepackage{lipsum}
-
 %\addbibresource{references.bib}
 
 \title{\Large BINF-402 Project \\
-\huge Differencial expression analysis of microRNA transcriptome between pancreas, prostate and gastrocnemius medialis tissues}
+\huge Differential expression analysis of micro-RNA transcriptome between pancreas, prostate and gastrocnemius medialis tissues}
 
 
 \author{Léopold Guyot}
@@ -57,23 +52,39 @@
 
 \begin{multicols}{2}
 \section{Introduction}
-R \citep{Rlang}
-\lipsum
+This analysis investigates microRNA expression variations across three distinct tissues; prostate gland, pancreas body, and gastrocnemius medialis. For this a simple workflow will be used, consisting of quality control of the reads, followed by a filtering, then a mapping to finish we a classic differential expression analysis. The goal is to unveil tissue-specific expression patterns of miRNA. Tissue selection is strategic, anticipating closer miRNA expression patterns between prostate and pancreas, both glandular, and unique signatures in gastrocnemius medialis, a muscle tissue.
 
 \section{Methods}
+All the data processing was done using the language R \citep{Rlang} and several packages.
+\subsection{Data Retrieval \small (\href{https://github.com/leopoldguyot/BINF-402_Transcriptomic_Project/blob/main/retrieve_data.R}{retrieve\_data.R})}
+All the data sets used in this project have been retrieve from the ENCODE database \citep{luo2020new}.
+Three tissues have been selectionned; pancreas body, prostate gland and the gastrocnemius medialis tissue.
+For each tissue, data used was coming from two distinct experiments, each comprising two replicates, thereby totaling four replicates per tissue (cf. \href{https://github.com/leopoldguyot/BINF-402_Transcriptomic_Project/blob/data/sample_table_links.csv}{"data/sample\_table\_links.csv"} for file accession numbers).
 
-\lipsum
+The original UCSC hg38 genome was used as reference for the mapping. The NCBI accession for this genome is \href{https://www.ncbi.nlm.nih.gov/datasets/genome/GCF_000001405.26/}{GCA\_000001405.26}.
+
+
+\subsection{Read Quality Control}
+present QC before and after filtering
+\subsection{Mapping}
+present mapping stats
+\subsection{Differential Expression Analysis}
+%\subsection{Gene Ontology}
 
 \section{Results}
 
-\lipsum
+Present the overall results => Differential Expression Analysis
+
+
+
 
 \section{Discussion}
+???? maybe not include it
+=> things I could Improve
 
-\lipsum 
 
-\section{Conclusion} 
-\lipsum
+\section{Conclusion}
+
 
 \bibliography{references}
 
