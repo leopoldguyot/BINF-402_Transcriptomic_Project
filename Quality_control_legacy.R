@@ -1,6 +1,6 @@
 ############## IMPORTS #################
 library(ShortRead)
-library(ggplot2)
+library(tidyverse)
 library(stringr)
 ############# FUNCTIONS ###############
 
@@ -53,10 +53,38 @@ run_qc_plots <- function(fastqfiles){
     read_mean_plot(quality,base)
     cycle_mean_plot(quality,base)
   }
-
 }
+
+
+run_group_means <- function(fastqfiles, groupname, df) {
+  result_df <- df
+
+  for (file in fastqfiles) {
+    base <- str_remove(basename(file), ".fastq.gz")
+    print(base)
+    quality <- load_quality(file)
+    means <- extract_cycle_means(quality)
+
+    if (length(means) < 50) {
+      means <- c(rep(NA, 50 - length(means)), means)
+    }
+
+    result_df <- bind_rows(result_df,
+                           data.frame(file_name = base,
+                                      group = groupname,
+                                      as.data.frame(t(means))))
+  }
+
+  return(result_df)
+}
+
 ############### BODY #######################
 
 reads_files <- list.files(path = "data/mirnaseq_data", full.names = TRUE)
 
 run_qc_plots(reads_files)
+
+groups_cycle_means_df <- data.frame("file_name"= character(),"group" = character())
+
+vanilla <- list.files("data/mirnaseq_data/", full.names = TRUE)
+groups_cycle_means_df <-  run_group_means(vanilla, "vanilla", groups_cycle_means_df)
