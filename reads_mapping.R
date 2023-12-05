@@ -43,6 +43,7 @@ destination_filtered <- sapply(reads_files,
 preprocessReads(reads_files,
                 outputFilename = destination_filtered,
                 truncateStartBases = 5,
+                truncateEndBases = 4,
                 nBases = 0)
 
 # Remove read with bad quality

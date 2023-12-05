@@ -88,3 +88,15 @@ groups_cycle_means_df <- data.frame("file_name"= character(),"group" = character
 
 vanilla <- list.files("data/mirnaseq_data/", full.names = TRUE)
 groups_cycle_means_df <-  run_group_means(vanilla, "vanilla", groups_cycle_means_df)
+trimmed <- list.files("data_output/filtered_reads", full.names = TRUE, pattern = "^filtered")
+groups_cycle_means_df <- run_group_means(trimmed, "trimmed", groups_cycle_means_df)
+trimmed_filtered <- list.files("data_output/filtered_reads", full.names = TRUE, pattern = "^v2")
+groups_cycle_means_df <- run_group_means(trimmed_filtered, "trimmed + filtered", groups_cycle_means_df)
+
+groups_cycle_means_df_pl <- groups_cycle_means_df %>% 
+  pivot_longer(cols = 3:52,
+               names_to = "cycle",
+               values_to = "mean")
+
+ggplot(groups_cycle_means_df_pl, aes(x = cycle, y = mean, color = group))+
+  geom_line()
