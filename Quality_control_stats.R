@@ -106,6 +106,11 @@ summary_df <- groups_cycle_means_df_pl %>%
 
 summary_df$group <- factor(summary_df$group, levels = c("trimmed", "trimmed + filtered", "vanilla"))
 summary_df$group <- relevel(summary_df$group, ref = "vanilla")
-global_quality_plot <- ggplot(summary_df, aes(x = cycle, y = mean, color = group))+
+global_quality_plot <- ggplot(summary_df, aes(x = cycle, y = mean_quality, color = group))+
   geom_line()
-ggsave("Figures/QC_plots/mean_per_group_and_cycles.pdf")
+global_quality_plot_smooth <- ggplot(summary_df, aes(x = cycle, y = mean, color = group))+
+  geom_line()+
+  geom_smooth(data = groups_cycle_means_df_pl,
+              mapping = aes(x = cycle, y = mean, color = group))
+ggsave("Figures/QC_plots/mean_per_group_and_cycles.pdf",plot = global_quality_plot,width = 4, height = 2.5)
+ggsave("Figures/QC_plots/mean_per_group_and_cycles_smooth.pdf", plot = global_quality_plot_smooth)

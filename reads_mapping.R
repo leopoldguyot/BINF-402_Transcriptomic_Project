@@ -80,4 +80,4 @@ saveRDS(mapping_proportion, file = "data_output/mapped_reads/mapping_proportion.
 
 mapping_prop_plot <- ggplot(mapping_proportion, aes(x = processed, y = PropMapped, color = processed))+
   geom_boxplot() + theme(legend.position = "none")
-ggsave(filename = "Figures/mapping_props.pdf",plot = mapping_prop_plot)
+ggsave(filename = "Figures/mapping_props.pdf",plot = mapping_prop_plot, height = 2, width = 4)

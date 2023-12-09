@@ -34,6 +34,7 @@ statistics_per_reads <- rqcReadQualityCalc(qcRes)
 statistics_per_cycle_filtered <- rqcCycleQualityBoxCalc(qcRes_filtered)
 statistics_per_reads_filtered <- rqcReadQualityCalc(qcRes_filtered)
 
+# following saved manually
 stats_by_cycle_plot(qcRes)
 stats_by_cycle_plot(qcRes_filtered)
 stats_by_cycle_plot(qcRes_filtered_v2)
@@ -51,3 +52,5 @@ ggsave("Figures/QC_plots/global_cycle_quality_boxplot.pdf",rqcCycleQualityBoxPlo
 ggsave("Figures/QC_plots/global_reads_quality_plot.pdf",rqcReadQualityPlot(qcRes))
 ggsave("Figures/QC_plots/global_cycle_quality_boxplot_filtered.pdf",rqcCycleQualityBoxPlot(qcRes_filtered))
 ggsave("Figures/QC_plots/global_reads_quality_plot_filtered.pdf",rqcReadQualityPlot(qcRes_filtered))
+ggsave("Figures/QC_plots/global_cycle_quality_boxplot_filtered_v2.pdf",rqcCycleQualityBoxPlot(qcRes_filtered_v2))
+ggsave("Figures/QC_plots/global_reads_quality_plot_filtered_v2.pdf",rqcReadQualityPlot(qcRes_filtered_v2))
