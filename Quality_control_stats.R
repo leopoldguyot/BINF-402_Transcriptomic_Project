@@ -66,9 +66,9 @@ run_group_means <- function(fastqfiles, groupname, df) {
     means <- extract_cycle_means(quality)
 
     if (length(means) < 50) {
-      means <- c(rep(NA, 50 - length(means)), means)
+      means <- c(rep(NA, 5), means, rep(NA,7))
+      names(means) <- seq(1,50)
     }
-
     result_df <- bind_rows(result_df,
                            data.frame(file_name = base,
                                       group = groupname,
@@ -92,11 +92,20 @@ trimmed <- list.files("data_output/filtered_reads", full.names = TRUE, pattern =
 groups_cycle_means_df <- run_group_means(trimmed, "trimmed", groups_cycle_means_df)
 trimmed_filtered <- list.files("data_output/filtered_reads", full.names = TRUE, pattern = "^v2")
 groups_cycle_means_df <- run_group_means(trimmed_filtered, "trimmed + filtered", groups_cycle_means_df)
-
-groups_cycle_means_df_pl <- groups_cycle_means_df %>% 
+colnames(groups_cycle_means_df)[3:52] <- seq(1,50)
+groups_cycle_means_df_pl <- groups_cycle_means_df %>%
   pivot_longer(cols = 3:52,
                names_to = "cycle",
-               values_to = "mean")
+               values_to = "mean") %>%
+  mutate(mean = as.numeric(mean),
+         cycle = as.numeric(cycle))
+write_csv(groups_cycle_means_df_pl, file = "data_output/filtered_reads/QC_stats_quality_summary.csv")
+summary_df <- groups_cycle_means_df_pl %>%
+  group_by(group, cycle) %>%
+  summarise("mean_quality" = mean(mean))
 
-ggplot(groups_cycle_means_df_pl, aes(x = cycle, y = mean, color = group))+
+summary_df$group <- factor(summary_df$group, levels = c("trimmed", "trimmed + filtered", "vanilla"))
+summary_df$group <- relevel(summary_df$group, ref = "vanilla")
+global_quality_plot <- ggplot(summary_df, aes(x = cycle, y = mean, color = group))+
   geom_line()
+ggsave("Figures/QC_plots/mean_per_group_and_cycles.pdf")

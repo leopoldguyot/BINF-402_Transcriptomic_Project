@@ -43,7 +43,7 @@ destination_filtered <- sapply(reads_files,
 preprocessReads(reads_files,
                 outputFilename = destination_filtered,
                 truncateStartBases = 5,
-                truncateEndBases = 4,
+                truncateEndBases = 7,
                 nBases = 0)
 
 # Remove read with bad quality
@@ -74,7 +74,10 @@ mapping_files <- list.files(path = "data_output/mapped_reads",
 
 mapping_proportion <- propmapped(mapping_files)
 mapping_proportion["processed"] <- c(rep("No", 12),
-                                       rep("StartTrimmed",12),
-                                       rep("StartTrimmed+ReadsFiltered",12))
+                                       rep("Trimmed",12),
+                                       rep("Trimmed+ReadsFiltered",12))
 saveRDS(mapping_proportion, file = "data_output/mapped_reads/mapping_proportion.rds")
-ggplot(mapping_proportion, aes(x = processed, y = PropMapped))+geom_boxplot()
+
+mapping_prop_plot <- ggplot(mapping_proportion, aes(x = processed, y = PropMapped, color = processed))+
+  geom_boxplot() + theme(legend.position = "none")
+ggsave(filename = "Figures/mapping_props.pdf",plot = mapping_prop_plot)
