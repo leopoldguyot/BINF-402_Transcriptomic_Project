@@ -4,8 +4,8 @@ library(DESeq2)
 library(tidyverse)
 ############### BODY ####################
 
-files <- list.files(path = "data_output/mapped_reads/",
-                    pattern = "^filtered.*\\.bam$",
+files <- list.files(path = "data_output/mapped_reads",
+                    pattern = "^v2_filtered.*\\.bam$",
                     full.names = TRUE)
 fc <- featureCounts(files,
                     annot.inbuilt = "hg38")
@@ -13,7 +13,7 @@ fc <- featureCounts(files,
 sample_table <- read.csv(file = "data/sample_table_links.csv")
 rownames(sample_table) <- sample_table[[3]]
 sample_table <- sample_table[order(row.names(sample_table)), ]
-colnames(fc$counts) <- sub("^filtered_(.*?)\\.fastq\\.gz_reads_mapped\\.bam$", "\\1", colnames(fc$counts))
+colnames(fc$counts) <- sub("^v2_filtered_(.*?)\\.fastq\\.gz_reads_mapped\\.bam$", "\\1", colnames(fc$counts))
 
 desd <- DESeqDataSetFromMatrix(countData = fc$counts,
                               colData = sample_table,
@@ -25,10 +25,11 @@ as_tibble(assay(desd), rownames = "gene") %>%
   geom_histogram(bins = 20) +
   facet_wrap(~ sample)
 
-desd <- desd[rowSums(assay(desd)) > 0, ]
+desd <- desd[rowSums(assay(desd)) > 0, ] #removing rows containing only zeros
 desd <- DESeq(desd)
 rldesd <- rlogTransformation(desd)
 plotPCA(rldesd, intgroup = "tissue_name")
+# kmeans unsupervised clustering
 sizeFactors(desd) #extreme value for ENCFF486DIS other like ENCFF689CZI are quite low
 
 plotDispEsts(desd)

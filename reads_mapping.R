@@ -79,5 +79,8 @@ mapping_proportion["processed"] <- c(rep("No", 12),
 saveRDS(mapping_proportion, file = "data_output/mapped_reads/mapping_proportion.rds")
 
 mapping_prop_plot <- ggplot(mapping_proportion, aes(x = processed, y = PropMapped, color = processed))+
-  geom_boxplot() + theme(legend.position = "none")
-ggsave(filename = "Figures/mapping_props.pdf",plot = mapping_prop_plot, height = 2, width = 4)
+  geom_boxplot() +
+  theme(legend.position = "none")+
+  ylab("Proportion mapped")+
+  xlab("Type of processing")
+ggsave(filename = "Figures/mapping_props.pdf",plot = mapping_prop_plot, height = 3, width = 4)

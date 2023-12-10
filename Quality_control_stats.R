@@ -107,7 +107,7 @@ summary_df <- groups_cycle_means_df_pl %>%
 summary_df$group <- factor(summary_df$group, levels = c("trimmed", "trimmed + filtered", "vanilla"))
 summary_df$group <- relevel(summary_df$group, ref = "vanilla")
 global_quality_plot <- ggplot(summary_df, aes(x = cycle, y = mean_quality, color = group))+
-  geom_line()
+  geom_line()+theme(legend.position = "none")+xlab("Cycle")+ylab("Mean Quality")
 global_quality_plot_smooth <- ggplot(summary_df, aes(x = cycle, y = mean, color = group))+
   geom_line()+
   geom_smooth(data = groups_cycle_means_df_pl,
