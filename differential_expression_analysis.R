@@ -24,22 +24,39 @@ as_tibble(assay(desd), rownames = "gene") %>%
   ggplot(aes(x = log2(counts + 1), fill = sample)) +
   geom_histogram(bins = 20) +
   facet_wrap(~ sample)
-
+SD <- tibble(sample = colnames(desd), SeqDepth = colSums(assay(desd))) %>%
+  ggplot(aes(x = sample, y = SeqDepth)) +
+  geom_col()+
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+ggsave(plot = SD,"Figures/differential_analysis/depth.pdf", width = 4, height = 2.5)
 desd <- desd[rowSums(assay(desd)) > 0, ] #removing rows containing only zeros
+
+
+desd$tissue_name # gastrocnemius_medialis is the reference level
+desd$tissue_name <- relevel(desd$tissue_name, ref = "pancreas_body")#change to have prostate
 desd <- DESeq(desd)
+saveRDS(desd, file = "data_output/differential_results.rds")
 rldesd <- rlogTransformation(desd)
-plotPCA(rldesd, intgroup = "tissue_name")
+pca_res <- plotPCA(rldesd, intgroup = "tissue_name", returnData = TRUE)
+kmeans_res <- kmeans(pca_res[,1:2], 3, 100) # between_SS / total_SS =  99.0 %
+
+ggsave("Figures/differential_analysis/pca.pdf",
+       plotPCA(rldesd, intgroup = "tissue_name"),
+       height = 3, width = 6)
 # kmeans unsupervised clustering
 sizeFactors(desd) #extreme value for ENCFF486DIS other like ENCFF689CZI are quite low
 
+
+pdf("Figures/differential_analysis/dispersion.pdf", width = 7, height = 4.5)
 plotDispEsts(desd)
-desd$tissue_name # gastrocnemius_medialis is the reference level
+dev.off()
+
 res_pancreas_vs_gastro <- results(desd,
-               name = "tissue_name_pancreas_body_vs_gastrocnemius_medialis")
-res_prostate_vs_gastro <- results(desd,
-                                  name = "tissue_name_prostate_gland_vs_gastrocnemius_medialis")
+               name = "tissue_name_gastrocnemius_medialis_vs_pancreas_body")
+res_pancreas_vs_prostate <- results(desd,
+                                  name = "tissue_name_prostate_gland_vs_pancreas_body")
 res_tbl_pancreas_vs_gastro <- as_tibble(res_pancreas_vs_gastro,rownames = "gene")
-res_tbl_prostate_vs_gastro <- as_tibble(res_prostate_vs_gastro,rownames = "gene")
+res_tbl_pancreas_vs_prostate <- as_tibble(res_pancreas_vs_prostate,rownames = "gene")
 
 metadata(res_pancreas_vs_gastro)$filterThreshold # really high
 as_tibble(metadata(res_pancreas_vs_gastro)$filterNumRej) %>%
@@ -62,5 +79,15 @@ res_tbl_pancreas_vs_gastro %>%
   geom_vline(xintercept = -1) +
   theme(legend.position = "bottom")
 
+res_tbl_pancreas_vs_prostate %>%
+  filter(!is.na(padj)) %>%
+  ggplot(aes(x = log2FoldChange, y = -log10(padj),
+             color = padj < 0.05 & abs(log2FoldChange) > 1)) +
+  scale_colour_manual(values = c("gray", "red")) +
+  geom_point(size = 0.5) +
+  geom_hline(yintercept = -log10(0.05)) +
+  geom_vline(xintercept = 1) +
+  geom_vline(xintercept = -1) +
+  theme(legend.position = "bottom")
 
 # Maybe plot count plot of higher expressed miRNA

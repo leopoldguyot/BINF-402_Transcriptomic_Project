@@ -4,3 +4,4 @@
 !mapped_reads/
 !filtered_reads/
 !QC/
+!differential_results.rds

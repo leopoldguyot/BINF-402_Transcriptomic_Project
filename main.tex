@@ -139,7 +139,7 @@ A first exploration of the normalized count matrix was done using dimension redu
 To access the differential analysis, DESeq2 employs a step that will estimate the dispersion parameter of the negative-binomial distribution. This estimation rely to the assumption that features of similar expression levels have similar dispersions and will thus use information coming from similar expressed features to estimate the dispersion values. Then it proceeds with extra step that will lead to reduce false positives in the differential expression analysis. These steps include, fitting the dispersion values to then shrink the dispersion values toward the values predicted by the curve. The results of the dispersion estimation is visible on the Figure \ref{fig:dispersion}
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=1\columnwidth]{Figures/differential_analysis/dispersion.pdf}
+	\includegraphics[width=\columnwidth]{Figures/differential_analysis/dispersion.pdf}
 	\caption{\footnotesize{Graph of the proportion of reads mapped based on the read processing method used. For each category, n = 12 (4 replicate for 3 tissues). The first category "No" stands for the case with no processing.}}
 	\label{fig:dispersion}
 \end{figure}
