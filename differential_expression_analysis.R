@@ -90,10 +90,17 @@ ggsave(file = "Figures/differential_analysis/volcano.pdf",
        height = 5.5, width = 10)
 # Count number of features with padj under 0.05 and abs(log2FoldChange) above 1
 
-res_tbl_pancreas_vs_gastro %>%
+n_vs_gastro <- res_tbl_pancreas_vs_gastro %>%
   filter(padj < 0.05 & abs(log2FoldChange) > 1) %>%
   nrow()
 
-res_tbl_pancreas_vs_prostate %>%
+n_vs_prost <- res_tbl_pancreas_vs_prostate %>%
   filter(padj < 0.05 & abs(log2FoldChange) > 1) %>%
   nrow()
+tot_vs_gastro <- nrow(res_pancreas_vs_gastro)
+tot_vs_prost <- nrow(res_pancreas_vs_prostate)
+
+table <- as.table(rbind(c(n_vs_gastro, tot_vs_gastro),c(n_vs_prost, tot_vs_prost)))
+dimnames(table) <- list(pair = c("vs_gastro", "vs_prost"), dif_miRNA = c(TRUE, FALSE))
+
+chisq.test(table) #p-value = 0.2705
