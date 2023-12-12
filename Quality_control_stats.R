@@ -82,15 +82,17 @@ run_group_means <- function(fastqfiles, groupname, df) {
 
 reads_files <- list.files(path = "data/mirnaseq_data", full.names = TRUE)
 
-run_qc_plots(reads_files)
+run_qc_plots(reads_files) # did not use it on the report
 
+
+# get all the mean quality per cycle for each data set
 groups_cycle_means_df <- data.frame("file_name"= character(),"group" = character())
 
-vanilla <- list.files("data/mirnaseq_data/", full.names = TRUE)
+vanilla <- list.files("data/mirnaseq_data/", full.names = TRUE) #unprocessed
 groups_cycle_means_df <-  run_group_means(vanilla, "vanilla", groups_cycle_means_df)
-trimmed <- list.files("data_output/filtered_reads", full.names = TRUE, pattern = "^filtered")
+trimmed <- list.files("data_output/filtered_reads", full.names = TRUE, pattern = "^filtered") #trimmed
 groups_cycle_means_df <- run_group_means(trimmed, "trimmed", groups_cycle_means_df)
-trimmed_filtered <- list.files("data_output/filtered_reads", full.names = TRUE, pattern = "^v2")
+trimmed_filtered <- list.files("data_output/filtered_reads", full.names = TRUE, pattern = "^v2") #trimmed + filtered
 groups_cycle_means_df <- run_group_means(trimmed_filtered, "trimmed + filtered", groups_cycle_means_df)
 colnames(groups_cycle_means_df)[3:52] <- seq(1,50)
 groups_cycle_means_df_pl <- groups_cycle_means_df %>%
@@ -99,6 +101,8 @@ groups_cycle_means_df_pl <- groups_cycle_means_df %>%
                values_to = "mean") %>%
   mutate(mean = as.numeric(mean),
          cycle = as.numeric(cycle))
+
+
 write_csv(groups_cycle_means_df_pl, file = "data_output/filtered_reads/QC_stats_quality_summary.csv")
 summary_df <- groups_cycle_means_df_pl %>%
   group_by(group, cycle) %>%
@@ -106,8 +110,12 @@ summary_df <- groups_cycle_means_df_pl %>%
 
 summary_df$group <- factor(summary_df$group, levels = c("trimmed", "trimmed + filtered", "vanilla"))
 summary_df$group <- relevel(summary_df$group, ref = "vanilla")
+
+# plot of the mean quality per cycle (mean per group of read treatment)
 global_quality_plot <- ggplot(summary_df, aes(x = cycle, y = mean_quality, color = group))+
   geom_line()+theme(legend.position = "none")+xlab("Cycle")+ylab("Mean Quality")
+
+# same plot but with smoothing (did not use)
 global_quality_plot_smooth <- ggplot(summary_df, aes(x = cycle, y = mean, color = group))+
   geom_line()+
   geom_smooth(data = groups_cycle_means_df_pl,

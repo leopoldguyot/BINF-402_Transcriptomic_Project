@@ -2,6 +2,9 @@ library(Rqc)
 library(tidyverse)
 library(patchwork)
 
+# Code not used directly for the report
+# This was use to explore the reads quality
+
 stats_by_cycle_plot <- function(qcRes){
   groups <- unique(perFileInformation(qcRes)$group)
   for (group in groups) {

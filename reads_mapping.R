@@ -66,18 +66,20 @@ for (fastqFile in destination_filtered) {
 reads_files_to_be_mapped <- c(list.files(path = "data_output/filtered_reads",
                                          full.names = TRUE),
                               reads_files)
-lapply(reads_files_to_be_mapped, mapping)
+lapply(reads_files_to_be_mapped, mapping) # applying the mapping on all files (36)
 
 mapping_files <- list.files(path = "data_output/mapped_reads",
                     pattern = "*\\.bam$",
-                    full.names = TRUE)
+                    full.names = TRUE) # selection of .bam files (36)
 
-mapping_proportion <- propmapped(mapping_files)
+# create a dataframe with information of read mapped for each data set
+mapping_proportion <- propmapped(mapping_files) 
 mapping_proportion["processed"] <- c(rep("No", 12),
                                        rep("Trimmed",12),
                                        rep("Trimmed+ReadsFiltered",12))
 saveRDS(mapping_proportion, file = "data_output/mapped_reads/mapping_proportion.rds")
 
+#plot mapping props
 mapping_prop_plot <- ggplot(mapping_proportion, aes(x = processed, y = PropMapped, color = processed))+
   geom_boxplot() +
   theme(legend.position = "none")+
