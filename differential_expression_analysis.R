@@ -2,6 +2,7 @@
 library(Rsubread)
 library(DESeq2)
 library(tidyverse)
+library(patchwork)
 ############### BODY ####################
 
 files <- list.files(path = "data_output/mapped_reads",
@@ -16,8 +17,8 @@ sample_table <- sample_table[order(row.names(sample_table)), ]
 colnames(fc$counts) <- sub("^v2_filtered_(.*?)\\.fastq\\.gz_reads_mapped\\.bam$", "\\1", colnames(fc$counts))
 
 desd <- DESeqDataSetFromMatrix(countData = fc$counts,
-                              colData = sample_table,
-                              design = ~ tissue_name)
+                               colData = sample_table,
+                               design = ~ tissue_name)
 
 as_tibble(assay(desd), rownames = "gene") %>%
   pivot_longer(names_to = "sample", values_to = "counts", cols = 2:13) %>%
@@ -58,36 +59,41 @@ res_pancreas_vs_prostate <- results(desd,
 res_tbl_pancreas_vs_gastro <- as_tibble(res_pancreas_vs_gastro,rownames = "gene")
 res_tbl_pancreas_vs_prostate <- as_tibble(res_pancreas_vs_prostate,rownames = "gene")
 
-metadata(res_pancreas_vs_gastro)$filterThreshold # really high
-as_tibble(metadata(res_pancreas_vs_gastro)$filterNumRej) %>%
-  ggplot(aes(x = theta, y = numRej)) +
-  geom_point() +
-  geom_vline(xintercept = 0.872449,
-             color = 'red')
 
-hist(res_tbl_pancreas_vs_gastro$pvalue)
-plotMA(res_pancreas_vs_gastro)
+# Volcano plots
+volcano_pan_vs_gas <- res_tbl_pancreas_vs_gastro %>%
+  filter(!is.na(padj)) %>%
+  ggplot(aes(x = log2FoldChange, y = -log10(padj),
+             color = padj < 0.05 & abs(log2FoldChange) > 1)) +
+  scale_colour_manual(values = c("gray", "red")) +
+  geom_point(size = 0.5) +
+  geom_hline(yintercept = -log10(0.05)) +
+  geom_vline(xintercept = 1) +
+  geom_vline(xintercept = -1) +
+  ggtitle("Pancreas compared to Gastrocnemius medialis")+
+  theme(legend.position = "bottom", plot.title = element_text(hjust = 0.5))
+
+volcano_pan_vs_pro <- res_tbl_pancreas_vs_prostate %>%
+  filter(!is.na(padj)) %>%
+  ggplot(aes(x = log2FoldChange, y = -log10(padj),
+             color = padj < 0.05 & abs(log2FoldChange) > 1)) +
+  scale_colour_manual(values = c("gray", "red")) +
+  geom_point(size = 0.5) +
+  geom_hline(yintercept = -log10(0.05)) +
+  geom_vline(xintercept = 1) +
+  geom_vline(xintercept = -1) +
+  ggtitle("Pancreas compared to Prostate")+
+  theme(legend.position = "bottom",plot.title = element_text(hjust = 0.5))
+
+ggsave(file = "Figures/differential_analysis/volcano.pdf",
+       plot = volcano_pan_vs_pro + volcano_pan_vs_gas,
+       height = 5.5, width = 10)
+# Count number of features with padj under 0.05 and abs(log2FoldChange) above 1
 
 res_tbl_pancreas_vs_gastro %>%
-  filter(!is.na(padj)) %>%
-  ggplot(aes(x = log2FoldChange, y = -log10(padj),
-             color = padj < 0.05 & abs(log2FoldChange) > 1)) +
-  scale_colour_manual(values = c("gray", "red")) +
-  geom_point(size = 0.5) +
-  geom_hline(yintercept = -log10(0.05)) +
-  geom_vline(xintercept = 1) +
-  geom_vline(xintercept = -1) +
-  theme(legend.position = "bottom")
+  filter(padj < 0.05 & abs(log2FoldChange) > 1) %>%
+  nrow()
 
 res_tbl_pancreas_vs_prostate %>%
-  filter(!is.na(padj)) %>%
-  ggplot(aes(x = log2FoldChange, y = -log10(padj),
-             color = padj < 0.05 & abs(log2FoldChange) > 1)) +
-  scale_colour_manual(values = c("gray", "red")) +
-  geom_point(size = 0.5) +
-  geom_hline(yintercept = -log10(0.05)) +
-  geom_vline(xintercept = 1) +
-  geom_vline(xintercept = -1) +
-  theme(legend.position = "bottom")
-
-# Maybe plot count plot of higher expressed miRNA
+  filter(padj < 0.05 & abs(log2FoldChange) > 1) %>%
+  nrow()
